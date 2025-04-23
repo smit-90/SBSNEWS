@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsFlash - Stay Updated</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>SBS News Corporation</h1>
+            </div>
+            <nav>
+                <ul class="category-list">
+                    <li><button class="category-btn active" data-category="general">General</button></li>
+                    <li><button class="category-btn" data-category="business">Business</button></li>
+                    <li><button class="category-btn" data-category="technology">Technology</button></li>
+                    <li><button class="category-btn" data-category="health">Health</button></li>
+                    <li><button class="category-btn" data-category="science">Science</button></li>
+                    <li><button class="category-btn" data-category="sports">Sports</button></li>
+                    <li><button class="category-btn" data-category="entertainment">Entertainment</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search for news...">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="current-category">
+            <h2>Latest Headlines</h2>
+        </div>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading news...</p>
+        </div>
+        <div id="news-container" class="news-grid">
+        </div>
+        <div id="error-container" class="error-container">
+            <p>Unable to load news. Please try again later.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NewsFlash.
+              made by Powered by <a href="https://newsapi.org" target="_blank">NewsAPI.org</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
