@@ -1,5 +1,5 @@
 
-const API_KEY = '511a56d8bd254920ae03df1f33db7c79'; 
+const API_KEY = '511a56d8bd254920ae03df1f33db7c79'; // Replace with your actual API key
 const BASE_URL = 'https://newsapi.org/v2';
 
 const newsContainer = document.getElementById('news-container');
