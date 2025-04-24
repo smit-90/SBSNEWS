@@ -1,5 +1,4 @@
-
-const API_KEY = 'c285dd7aae048f1be536c829711225'; // Replace with your actual API key
+const API_KEY = '511a56d8bd254920ae03df1f33db7c79'; // Replace this with your actual API key from https://newsapi.org
 const BASE_URL = 'https://newsapi.org/v2';
 
 const newsContainer = document.getElementById('news-container');
@@ -22,18 +21,18 @@ function setupEventListeners() {
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
             const category = button.dataset.category;
-            
+
             categoryButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
+
             currentCategory = category;
-            currentSearch = ''; 
+            currentSearch = '';
             searchInput.value = '';
             currentCategoryTitle.textContent = `${capitalizeFirstLetter(category)} News`;
             fetchNews(category);
         });
     });
-    
+
     searchBtn.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -54,19 +53,21 @@ function performSearch() {
 async function fetchNews(category) {
     showLoading();
     hideError();
-    
+
+    const url = `${BASE_URL}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
+
     try {
-        const url = `${BASE_URL}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
         const response = await fetch(url);
         const data = await response.json();
-        
+        console.log('Category News Response:', data);
+
         if (data.status === 'ok') {
             displayNews(data.articles);
         } else {
             throw new Error(data.message || 'Failed to fetch news');
         }
     } catch (error) {
-        console.error('Error fetching news:', error);
+        console.error('Fetch error:', error.message);
         showError();
     } finally {
         hideLoading();
@@ -76,19 +77,22 @@ async function fetchNews(category) {
 async function fetchNewsBySearch(searchTerm) {
     showLoading();
     hideError();
-    
+
+    // Use top-headlines search (free-tier safe)
+    const url = `${BASE_URL}/top-headlines?q=${encodeURIComponent(searchTerm)}&country=us&apiKey=${API_KEY}`;
+
     try {
-        const url = `${BASE_URL}/everything?q=${encodeURIComponent(searchTerm)}&sortBy=publishedAt&apiKey=${API_KEY}`;
         const response = await fetch(url);
         const data = await response.json();
-        
+        console.log('Search News Response:', data);
+
         if (data.status === 'ok') {
             displayNews(data.articles);
         } else {
             throw new Error(data.message || 'Failed to fetch news');
         }
     } catch (error) {
-        console.error('Error fetching news:', error);
+        console.error('Search fetch error:', error.message);
         showError();
     } finally {
         hideLoading();
@@ -97,30 +101,27 @@ async function fetchNewsBySearch(searchTerm) {
 
 function displayNews(articles) {
     newsContainer.innerHTML = '';
-    
-    if (articles.length === 0) {
-        newsContainer.innerHTML = '<div class="no-results">No articles found. Try a different search or category.</div>';
+
+    if (!articles || articles.length === 0) {
+        newsContainer.innerHTML = '<div class="no-results">No articles found.</div>';
         return;
     }
-    
+
     articles.forEach(article => {
         if (!article.title || article.title === '[Removed]') return;
-        
+
         const card = document.createElement('div');
         card.className = 'news-card';
-        
-        const publishedDate = new Date(article.publishedAt);
-        const formattedDate = publishedDate.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+
+        const date = new Date(article.publishedAt).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric'
         });
-        
+
         card.innerHTML = `
-            <img src="${article.urlToImage || '/placeholder.svg?height=180&width=300'}" 
+            <img src="${article.urlToImage || '/placeholder.svg'}" 
                  alt="${article.title}" 
                  class="news-image"
-                 onerror="this.src='/placeholder.svg?height=180&width=300'">
+                 onerror="this.src='/placeholder.svg'">
             <div class="news-content">
                 <span class="news-source">${article.source.name || 'Unknown Source'}</span>
                 <h3 class="news-title">
@@ -128,17 +129,16 @@ function displayNews(articles) {
                         ${article.title}
                     </a>
                 </h3>
-                <p class="news-description">${article.description || 'No description available'}</p>
-                <p class="news-date">${formattedDate}</p>
+                <p class="news-description">${article.description || 'No description available.'}</p>
+                <p class="news-date">${date}</p>
             </div>
         `;
-        
         newsContainer.appendChild(card);
     });
 }
 
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function showLoading() {
